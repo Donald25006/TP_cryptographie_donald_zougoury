@@ -1,0 +1,5 @@
+cryptography>=44.0
+argon2-cffi>=23.1
+pytest>=8.0
+
+\n

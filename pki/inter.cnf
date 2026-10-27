@@ -1,0 +1,74 @@
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+dir               = inter
+database          = $dir/index.txt
+new_certs_dir     = $dir/newcerts
+certificate       = $dir/inter.crt
+private_key       = $dir/inter.key
+serial            = $dir/serial
+crlnumber         = $dir/crlnumber
+default_md        = sha256
+default_days      = 90
+default_crl_days  = 7
+policy            = policy_feuille
+unique_subject    = no
+copy_extensions   = none
+
+[ policy_feuille ]
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ req ]
+prompt             = no
+default_md         = sha256
+distinguished_name = req_dn
+
+[ req_dn ]
+C  = BF
+O  = Universite TP
+CN = www.tp.local
+
+[ ext_serveur ]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = @san_serveur
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid,issuer
+
+[ san_serveur ]
+DNS.1 = www.tp.local
+DNS.2 = tp.local
+
+[ ext_client ]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = clientAuth
+subjectAltName         = email:alice@tp.local
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid,issuer
+
+[ ext_client_bob ]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = clientAuth
+subjectAltName         = email:bob@tp.local
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid,issuer
+
+[ ext_serveur_hors_scope ]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = DNS:www.example.com
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid,issuer
+
+\n

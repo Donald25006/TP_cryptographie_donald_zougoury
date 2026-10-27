@@ -1,0 +1,10 @@
+* text=auto
+*.sh text eol=lf
+*.py text eol=lf
+*.cnf text eol=lf
+*.conf text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.pdf binary
+.gitignore text eol=lf
+.gitattributes text eol=lf

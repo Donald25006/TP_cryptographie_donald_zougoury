@@ -1,0 +1,51 @@
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+dir               = racine
+database          = $dir/index.txt
+new_certs_dir     = $dir/newcerts
+certificate       = $dir/racine.crt
+private_key       = $dir/racine.key
+serial            = $dir/serial
+crlnumber         = $dir/crlnumber
+default_md        = sha384
+default_days      = 1825
+default_crl_days  = 30
+policy            = policy_intermediaire
+unique_subject    = no
+copy_extensions   = none
+
+[ policy_intermediaire ]
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ req ]
+prompt             = no
+default_md         = sha384
+distinguished_name = req_dn
+
+[ req_dn ]
+C  = BF
+O  = Universite TP
+CN = Racine TP
+
+[ ext_root ]
+basicConstraints       = critical,CA:TRUE,pathlen:1
+keyUsage               = critical,keyCertSign,cRLSign
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always
+
+[ ext_inter ]
+basicConstraints       = critical,CA:TRUE,pathlen:0
+keyUsage               = critical,keyCertSign,cRLSign
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always,issuer
+nameConstraints        = critical,permitted;DNS:tp.local,permitted;email:tp.local
+
+\n

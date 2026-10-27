@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.pytest_cache/
+tmp/
+*.py[cod]
+*.key
+*.csr
+*.p12
+*.pfx
+*.old
+pki/**/index.txt*
+pki/**/serial*
+pki/**/crlnumber*
+pki/**/newcerts/**
+
+\n
