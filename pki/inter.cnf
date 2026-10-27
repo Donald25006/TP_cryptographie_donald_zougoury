@@ -70,5 +70,3 @@ extendedKeyUsage       = serverAuth
 subjectAltName         = DNS:www.example.com
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid,issuer
-
-\n

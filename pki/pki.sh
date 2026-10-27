@@ -115,5 +115,3 @@ fi
 
 cat inter/serveur.crt inter/inter.crt > inter/serveur_chaine.crt
 echo "IGC generee. Les fichiers .key et .csr sont locaux et ignores par Git."
-
-\n

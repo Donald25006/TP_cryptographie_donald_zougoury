@@ -12,5 +12,3 @@ pki/**/index.txt*
 pki/**/serial*
 pki/**/crlnumber*
 pki/**/newcerts/**
-
-\n

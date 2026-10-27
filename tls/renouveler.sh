@@ -91,5 +91,3 @@ systemctl reload nginx
 trap - ERR
 rm -rf "$STAGE"
 echo "Renouvellement deploye. Ancienne chaine et ancienne cle sauvegardees dans $BACKUP_DIR."
-
-\n

@@ -148,5 +148,3 @@ def rechiffrer(
         clair,
         params=nouveaux_parametres,
     )
-
-\n

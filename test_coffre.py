@@ -66,5 +66,3 @@ def test_rechiffrement_change_le_secret_et_les_parametres():
     ) == DONNEES
     with pytest.raises(InvalidTag):
         dechiffrer(MOT_DE_PASSE, NOM, migre)
-
-\n

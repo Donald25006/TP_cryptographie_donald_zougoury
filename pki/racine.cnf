@@ -47,5 +47,3 @@ keyUsage               = critical,keyCertSign,cRLSign
 subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always,issuer
 nameConstraints        = critical,permitted;DNS:tp.local,permitted;email:tp.local
-
-\n
