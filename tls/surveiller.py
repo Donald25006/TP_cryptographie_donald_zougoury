@@ -21,6 +21,11 @@ def _charger_certificats(path: Path) -> list[x509.Certificate]:
     data = path.read_bytes()
     if b"-----BEGIN CERTIFICATE-----" in data:
         return list(x509.load_pem_x509_certificates(data))
+    if (
+        b"-----BEGIN X509 CRL-----" in data
+        or b"-----BEGIN CRL-----" in data
+    ):
+        return []
     return [x509.load_der_x509_certificate(data)]
 
 
@@ -56,7 +61,7 @@ def surveiller(dossier: Path) -> int:
         try:
             certificats = _charger_certificats(path)
             if not certificats:
-                raise ValueError("aucun certificat PEM")
+                continue
         except Exception as exc:
             print(f"CRITIQUE: {path}: certificat illisible ({type(exc).__name__})")
             code_global = 2

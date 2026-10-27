@@ -51,6 +51,48 @@ def main() -> int:
         return 1
     print("Test reussi: certificat a cinq jours classe CRITIQUE, code 2.")
     print(result.stdout.strip())
+
+    certificat_valide = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(subject)
+        .public_key(key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before((now - timedelta(minutes=1)).replace(tzinfo=None))
+        .not_valid_after((now + timedelta(days=90)).replace(tzinfo=None))
+        .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
+        .sign(key, hashes.SHA256())
+    )
+    crl = (
+        x509.CertificateRevocationListBuilder()
+        .issuer_name(subject)
+        .last_update((now - timedelta(minutes=1)).replace(tzinfo=None))
+        .next_update((now + timedelta(days=7)).replace(tzinfo=None))
+        .sign(key, hashes.SHA256())
+    )
+    with tempfile.TemporaryDirectory(prefix="surveillance-crl-") as temp:
+        folder = Path(temp)
+        (folder / "serveur.crt").write_bytes(
+            certificat_valide.public_bytes(Encoding.PEM)
+        )
+        (folder / "crls.pem").write_bytes(crl.public_bytes(Encoding.PEM))
+        result = subprocess.run(
+            [sys.executable, str(surveiller), str(folder)],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    if (
+        result.returncode != 0
+        or "OK:" not in result.stdout
+        or "CRITIQUE" in result.stdout
+    ):
+        print("ECHEC du test avec certificat et CRL PEM.", file=sys.stderr)
+        print(result.stdout, file=sys.stderr)
+        print(result.stderr, file=sys.stderr)
+        return 1
+    print("Test reussi: la CRL PEM est ignoree et le certificat valide reste OK.")
+    print(result.stdout.strip())
     return 0
 
 

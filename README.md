@@ -10,7 +10,7 @@ Ce depot rassemble une resolution des trois seances du TP EC1 : coffre de fichie
 - tls/nginx.conf : exemple Nginx pour TLS 1.2/1.3 et mTLS.
 - tls/surveiller.py, tls/test_surveiller.py : surveillance des expirations et verification avec un certificat de cinq jours.
 - tls/renouveler.sh : renouvellement avec verification prealable, sauvegarde et retour arriere.
-- output/pdf/rapport_resolution_tp_ec1.pdf : compte rendu detaille.
+- Rapport_de_Résolution_TP_EC1.pdf : compte rendu detaille.
 
 ## Partie Python
 
