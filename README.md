@@ -34,5 +34,6 @@ La configuration Nginx suppose que les certificats et CRL ont ete installes sous
 
 Pour tls/renouveler.sh, fournir le repertoire TLS, le repertoire PKI et une source OpenSSL protegee pour la phrase secrete de l'intermediaire, par exemple file:/run/credentials/renew/inter-passphrase. Le script conserve une sauvegarde datee avant de remplacer les fichiers.
 
-Les sorties dependantes de la machine (suite negociee, groupe ECDHE, details de Nginx et certificats emis) doivent etre relevees sur la machine Linux de laboratoire. Aucun resultat de handshake n'est invente dans le rapport.
+Les sorties dependantes de la machine (suite negociee, groupe ECDHE, details de Nginx et certificats emis) doivent etre relevees sur la machine Linux de laboratoire. 
+
 # TP_cryptographie_donald_zougoury
