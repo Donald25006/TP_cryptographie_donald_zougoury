@@ -12,13 +12,13 @@ if [[ -e racine/racine.key || -e inter/inter.key || -e racine/index.txt || -e in
 fi
 
 umask 077
-mkdir -p racine/newcerts racine/crl inter/newcerts inter/crl
+mkdir -p racine/certs racine/crl racine/newcerts inter/certs inter/crl inter/newcerts
 : > racine/index.txt
 : > inter/index.txt
 printf '1000\n' > racine/serial
 printf '1000\n' > racine/crlnumber
-printf '1000\n' > inter/serial
-printf '1000\n' > inter/crlnumber
+printf '2000\n' > inter/serial
+printf '2000\n' > inter/crlnumber
 
 read -r -s -p "Phrase secrete de l'AC racine : " ROOT_CA_PASSPHRASE
 printf '\n'
@@ -31,19 +31,24 @@ fi
 export ROOT_CA_PASSPHRASE INTER_CA_PASSPHRASE
 
 # Racine P-384, auto-signee, dix ans. Sa cle doit ensuite rester hors ligne.
+# Le profil ext_root n'est pas dans l'annexe B : ses extensions sont donnees ici.
 openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-384 \
     -aes-256-cbc -pass env:ROOT_CA_PASSPHRASE -out racine/racine.key
 openssl req -new -x509 -key racine/racine.key \
     -passin env:ROOT_CA_PASSPHRASE -sha384 -days 3650 \
     -subj "/C=BF/O=Universite TP/CN=Racine TP" \
-    -config racine.cnf -extensions ext_root -out racine/racine.crt
+    -addext "basicConstraints=critical,CA:TRUE,pathlen:1" \
+    -addext "keyUsage=critical,keyCertSign,cRLSign" \
+    -addext "subjectKeyIdentifier=hash" \
+    -addext "authorityKeyIdentifier=keyid:always" \
+    -out racine/racine.crt
 
 # Intermediaire P-256, signee par la racine, avec pathlen:0 et nameConstraints.
 openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 \
     -aes-256-cbc -pass env:INTER_CA_PASSPHRASE -out inter/inter.key
 openssl req -new -key inter/inter.key -passin env:INTER_CA_PASSPHRASE \
     -subj "/C=BF/O=Universite TP/CN=Intermediaire TP" \
-    -config racine.cnf -out inter/inter.csr
+    -out inter/inter.csr
 openssl ca -batch -config racine.cnf -passin env:ROOT_CA_PASSPHRASE \
     -extensions ext_inter -days 1825 -in inter/inter.csr -out inter/inter.crt
 
@@ -76,6 +81,7 @@ openssl req -new -key inter/hors_scope.key -subj "/CN=www.example.com" \
     -addext "subjectAltName=DNS:www.example.com" -out inter/hors_scope.csr
 openssl ca -batch -config inter.cnf -passin env:INTER_CA_PASSPHRASE \
     -extensions ext_serveur_hors_scope -days 90 \
+    -extfile profils_supplementaires.cnf \
     -in inter/hors_scope.csr -out inter/hors_scope.crt
 if output=$(openssl verify -CAfile racine/racine.crt -untrusted inter/inter.crt \
     -verify_hostname www.example.com inter/hors_scope.crt 2>&1); then
@@ -102,7 +108,8 @@ openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out inter/bob.ke
 openssl req -new -key inter/bob.key -subj "/CN=bob@tp.local" \
     -addext "subjectAltName=email:bob@tp.local" -out inter/bob.csr
 openssl ca -batch -config inter.cnf -passin env:INTER_CA_PASSPHRASE \
-    -extensions ext_client_bob -days 90 -in inter/bob.csr -out inter/bob.crt
+    -extfile profils_supplementaires.cnf -extensions ext_client_bob \
+    -days 90 -in inter/bob.csr -out inter/bob.crt
 openssl verify -crl_check_all -CRLfile crls.pem \
     -CAfile racine/racine.crt -untrusted inter/inter.crt \
     -purpose sslclient inter/bob.crt

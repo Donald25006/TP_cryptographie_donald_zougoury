@@ -1,0 +1,10 @@
+[Unit]
+Description=Renouvellement du certificat TLS du TP EC1
+After=nginx.service
+
+[Service]
+Type=oneshot
+User=root
+UMask=0077
+LoadCredential=inter-passphrase:/etc/tp-ec1/inter-passphrase
+ExecStart=/usr/local/sbin/tls-renouveler.sh /etc/nginx/tls /opt/tp-ec1/pki file:${CREDENTIALS_DIRECTORY}/inter-passphrase

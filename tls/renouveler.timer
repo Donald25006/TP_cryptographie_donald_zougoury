@@ -1,0 +1,11 @@
+[Unit]
+Description=Contrôle quotidien du certificat TLS du TP EC1
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=15m
+Unit=renouveler.service
+
+[Install]
+WantedBy=timers.target

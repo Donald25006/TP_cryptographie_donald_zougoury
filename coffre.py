@@ -33,7 +33,7 @@ class Argon2Params:
     p: int
 
 
-PARAMETRES_DEFAUT = Argon2Params(t=8, m=128 * 1024, p=4)
+PARAMETRES_DEFAUT = Argon2Params(t=10, m=128 * 1024, p=4)
 
 
 def _valider_parametres(params: Argon2Params) -> None:

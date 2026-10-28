@@ -48,8 +48,8 @@ def test_renommage_est_rejete_par_les_donnees_associees():
 def test_rechiffrement_change_le_secret_et_les_parametres():
     blob = chiffrer(MOT_DE_PASSE, NOM, DONNEES)
     params_plus_forts = Argon2Params(
-        t=PARAMETRES_DEFAUT.t + 1,
-        m=PARAMETRES_DEFAUT.m,
+        t=PARAMETRES_DEFAUT.t,
+        m=PARAMETRES_DEFAUT.m + 1024,
         p=PARAMETRES_DEFAUT.p,
     )
     migre = rechiffrer(
